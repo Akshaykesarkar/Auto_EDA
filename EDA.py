@@ -108,7 +108,7 @@ def visualize_data_with_groq(client, df):
                 ```"""
 
         completion = client.chat.completions.create(
-            model="deepseek-r1-distill-llama-70b",
+            model="qwen-2.5-coder-32b",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.7,
             max_tokens=131072

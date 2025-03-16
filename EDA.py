@@ -87,6 +87,7 @@ def visualize_data_with_groq(client, df):
                   * Hourly patterns (heatmaps and multiple line plots for Hour vs Sales)
                   * Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
                 - Each visualization MUST:
+                  * Use only selected data
                   * Use Plotly Express
                   * Have meaningful title starting with "Fig [N]: "
                   * Include axis labels with units

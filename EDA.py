@@ -71,56 +71,41 @@ def visualize_data_with_groq(client, df):
         df_cleaned = sanitize_dataframe(df)
         if df_cleaned.empty:
             return
-        analysis_insights = analyze_data_with_groq(client, df)
-        prompt = f"""Generate business-focused Plotly visualizations for this dataset:
+
+        # Enhanced prompt with strict dataset usage instructions
+        prompt = f"""Generate visualizations using THE ACTUAL DATASET PROVIDED (df_cleaned).
+        DO NOT CREATE OR MODIFY THE DATASET. Use these columns: {list(df_cleaned.columns)}
         
-**Dataset Profile**
-- Shape: {df_cleaned.shape}
-- Numeric Columns: {list(df_cleaned.select_dtypes(include=np.number).columns)}
-- Excluded Columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
-
-**Key Insights to Visualize**
-{analysis_insights}
-
-**Visualization Requirements**
-1. Create 7-9 meaningful charts showing:
-   - Time trends (line/area charts)
-   - Price-quantity relationships (scatter/bubble)
-   - Sales distributions (histogram/density)
-   - Product/category breakdowns (bar/pie)
-   - Hourly patterns (heatmap/facetted line)
-
-2. Forbidden:
-   - Box plots
-   - ID columns
-   - Unaggregated high-cardinality data
-
-3. Each chart MUST:
-   - Use Plotly Express
-   - Start with "# Fig [N]: [Business Insight]" comment
-   - Include data aggregations where needed
-   - Have proper titles/axis labels with units
-   - Use color strategically
-   - Include st.plotly_chart(fig, use_container_width=True)
-
-**Example Good Visualization**
-```python
-# Fig 1: Monthly Revenue Trend with 3-Month Moving Average
-monthly_data = df_cleaned.groupby('Month', as_index=False)['Sales'].sum()
-monthly_data['3MMA'] = monthly_data['Sales'].rolling(3).mean()
-fig = px.line(monthly_data, x='Month', y=['Sales', '3MMA'], 
-             title='Monthly Sales Trend with Moving Average',
-             labels={{'value': 'Revenue (USD)'}})
-fig.update_layout(legend_title_text='Metric')
-st.plotly_chart(fig, use_container_width=True)
-Dataset Sample
-{df_cleaned.head(3).to_string()}
-"""
+        Requirements:
+        1. Use ONLY this data: df_cleaned (shape: {df_cleaned.shape})
+        2. Forbidden:
+           - Any pd.DataFrame() creations
+           - Hardcoded data
+           - Example/test data
+        3. Required visualizations:
+           - Temporal trends (line/area charts)
+           - Correlation analysis (scatter plots)
+           - Distribution analysis (histograms)
+           - Categorical breakdowns (bar/pie)
+           - Hourly patterns (heatmaps)
+        
+        Example VALID code:
+        ```python
+        # Fig 1: Sales distribution by month
+        monthly_sales = df_cleaned.groupby('Month', as_index=False)['Sales'].sum()
+        fig = px.bar(monthly_sales, x='Month', y='Sales', 
+                    title='Actual Monthly Sales from Dataset')
+        st.plotly_chart(fig, use_container_width=True)
+        ```
+        
+        First 3 rows of ACTUAL DATA:
+        {df_cleaned.head(3).to_string()}
+        """
 
         completion = client.chat.completions.create(
             model="qwen-2.5-coder-32b",
             messages=[{"role": "user", "content": prompt}],
-            temperature=0.7,
+            temperature=0.3,  # Lower temperature for less creativity
             max_tokens=131072
         )
 
@@ -134,21 +119,36 @@ Dataset Sample
         exec_globals = {
             'pd': pd, 'np': np, 'st': st,
             'px': px, 'go': go, 'ff': ff,
-            'df_cleaned': df_cleaned  # Pass the actual dataframe
+            'df_cleaned': df_cleaned  # Pass actual dataframe
         }
 
-        st.subheader("Full Data Visualizations")
-        for code in code_blocks:
+        st.subheader("Full Dataset Visualizations")
+        for idx, code in enumerate(code_blocks, 1):
             try:
-                st.code(code.strip(), language='python')
-                # Execute the code which should contain st.plotly_chart() calls
+                # Validate code contains actual dataset reference
+                if 'df_cleaned' not in code:
+                    st.error(f"Visualization {idx} rejected: No dataset reference")
+                    continue
+                    
+                if 'pd.DataFrame(' in code:
+                    st.error(f"Visualization {idx} rejected: Creates new dataframe")
+                    continue
+
+                with st.expander(f"Visualization {idx}: Code", expanded=False):
+                    st.code(code.strip(), language='python')
+                
+                # Execute in controlled environment
                 exec(code.strip(), exec_globals)
+                
+                # Force display if figure wasn't shown
+                if 'fig' in exec_globals:
+                    st.plotly_chart(exec_globals['fig'], use_container_width=True)
+
             except Exception as e:
-                st.error(f"Error executing code block: {str(e)}")
+                st.error(f"Error in visualization {idx}: {str(e)}")
 
     except Exception as e:
         st.error(f"Visualization error: {str(e)}")
-
 
 data = st.file_uploader("Upload a CSV file", type=["csv"])
 

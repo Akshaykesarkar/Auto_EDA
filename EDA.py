@@ -71,7 +71,7 @@ def visualize_data_with_groq(client, df):
         df_cleaned = sanitize_dataframe(df)
         if df_cleaned.empty:
             return
-        prompt = f"""Generate meaningful Plotly visualizations for this dataset with shape {df_cleaned.shape},{df_cleaned.dtype}.
+        prompt = f"""Generate meaningful Plotly visualizations for this dataset with shape {df_cleaned.shape},{df_cleaned.dtypes}.
                 Requirements:
                 1. DATA UNDERSTANDING:
                 - Columns: {', '.join(df_cleaned.columns)}

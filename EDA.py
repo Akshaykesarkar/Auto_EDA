@@ -82,12 +82,11 @@ def visualize_data_with_groq(client, df):
 
                     2. VISUALIZATION REQUIREMENTS:
                     - Create 5-7 different chart types focusing on these relationships:
-                    * Temporal trends (use line/area charts for Month/Hour columns)
-                    * Correlations (scatter plots for Price vs Quantity/Sales)
-                    * Distributions (histograms/box plots for Sales/Price)
-                    * Categorical breakdowns (bar/pie charts for Product/Category columns)
-                    * Hourly patterns (heatmaps for Hour vs Sales)
-                    * Hourly Quantity Distribution by Month, etc. ( use multiple line plots)
+                    * Temporal trends (use line/area charts)
+                    * Correlations (scatter plots eg. Price vs Quantity)
+                    * Distributions (histograms/box plots)
+                    * Categorical breakdowns (bar/pie charts for Category columns)
+                    * Hourly Quantity Distribution etc. ( use multiple line plots)
                     - Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
                     - Each visualization MUST:
                     * Use Plotly Express

@@ -89,6 +89,10 @@ def visualize_data_with_groq(client, df):
            - Categorical breakdowns (bar/pie)
            - Hourly patterns (heatmaps)
         4. Create 8-9 different chart/plots types focusing on these relationships
+        5. OUTPUT FORMAT:
+           - Only Python code within ```python blocks
+           - One visualization per code block
+           - Include necessary aggregations
         
         Example VALID code:
         ```python

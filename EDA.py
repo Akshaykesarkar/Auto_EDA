@@ -89,7 +89,7 @@ def visualize_data_with_groq(client, df):
            - Distribution analysis (histograms)
            - Categorical breakdowns (bar/pie)
            - Hourly patterns (heatmaps)
-           - Include many other visualization like geographic when longitude and latitude is present
+           - Include many other visualization like geographic when longitude and latitude is present (use st.map(map_data))
         4. Create 8 different chart/plots types focusing on these relationships
         5. OUTPUT FORMAT:
            - Only Python code within ```python blocks

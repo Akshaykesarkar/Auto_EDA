@@ -176,7 +176,7 @@ def handle_custom_query(client, df_cleaned, query):
         2. Use ONLY df_cleaned (shape: {df_cleaned.shape})
         3. Output format:
            ## Explanation:
-           [Textual explanation of the insight]
+           [Textual explanation of the insight and recommendations]
            
            ## Code:
            ```python

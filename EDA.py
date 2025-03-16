@@ -72,14 +72,28 @@ def visualize_data_with_groq(client, df):
         if df_cleaned.empty:
             return
         
-        prompt = f"""Generate Plotly visualization code for this dataset with shape {df_cleaned.shape}.
-        Requirements:
-        - Use the FULL original dataframe 'df_cleaned'
-        - Create meaningful visualizations for numeric columns
-        - Include 3-4 different chart types
-        - Add proper titles and axis labels
-        - Use Plotly Express for simplicity
-        - Ensure visualizations use ALL relevant data points
+        prompt = f"""Generate meaningful Plotly visualizations for this dataset with shape {df_cleaned.shape}.
+                    Requirements:
+                    1. DATA UNDERSTANDING:
+                    - Columns: {', '.join(df_cleaned.columns)}
+                    - First 3 rows:
+                    {df_cleaned.head(3).to_string()}
+
+                    2. VISUALIZATION REQUIREMENTS:
+                    - Create 5-7 different chart types focusing on these relationships:
+                    * Temporal trends (use line/area charts)
+                    * Correlations (scatter plots for Price vs Quantity/Sales)
+                    * Distributions (histograms/box plots for Sales/Price)
+                    * Categorical breakdowns (bar/pie charts for Product/Category columns)
+                    * Hourly patterns (heatmaps for Hour vs Sales)
+                    * Hourly Quantity Distribution by Month, etc. ( use multiple line plots)
+                    - Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
+                    - Each visualization MUST:
+                    * Use Plotly Express
+                    * Have meaningful title starting with "Fig [N]: "
+                    * Include axis labels with units
+                    * Contain <50 words caption in # comments explaining insight
+                    * Use st.plotly_chart() with full width
         
         - Each visualization MUST:
                     * Use Plotly Express

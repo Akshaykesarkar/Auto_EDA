@@ -86,16 +86,9 @@ def visualize_data_with_groq(client, df):
                     * Distributions (histograms/box plots for Sales/Price)
                     * Categorical breakdowns (bar/pie charts for Product/Category columns)
                     * Hourly patterns (heatmaps for Hour vs Sales)
-                    * Hourly Quantity Distribution by Month, etc. ( use multiple line plots)
-                    - Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
+                    * Hourly Quantity Distribution by Month, etc. (use multiple line plots)
+                    * Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
                     - Each visualization MUST:
-                    * Use Plotly Express
-                    * Have meaningful title starting with "Fig [N]: "
-                    * Include axis labels with units
-                    * Contain <50 words caption in # comments explaining insight
-                    * Use st.plotly_chart() with full width
-        
-        - Each visualization MUST:
                     * Use Plotly Express
                     * Have meaningful title starting with "Fig [N]: "
                     * Include axis labels with units

@@ -72,51 +72,41 @@ def visualize_data_with_groq(client, df):
         if df_cleaned.empty:
             return
 
-        # Get analysis insights first
+        # First get analysis insights
         analysis_insights = analyze_data_with_groq(client, df)
         
-        # Enhanced prompt with structured guidance
-        prompt = f"""Generate meaningful Plotly visualizations for this dataset with shape {df_cleaned.shape}.
-Requirements:
-1. DATA UNDERSTANDING:
-- Columns: {', '.join(df_cleaned.columns)}
-- First 3 rows:
+        # Enhanced prompt with explicit variable names
+        prompt = f"""Generate Plotly visualizations using THIS EXACT DATAFRAME NAME: df_cleaned
+Dataset shape: {df_cleaned.shape}
+Columns: {', '.join(df_cleaned.columns)}
+First 3 rows:
 {df_cleaned.head(3).to_string()}
-- Key analysis insights: {analysis_insights}
 
-2. VISUALIZATION REQUIREMENTS:
-- Create 5-7 different chart types focusing on these relationships:
-  * Temporal trends (use line/area charts for Month/Hour columns)
-  * Correlations (scatter plots for Price vs Quantity/Sales)
-  * Distributions (histograms/box plots for Sales/Price)
-  * Categorical breakdowns (bar/pie charts for Product/Category columns)
-  * Hourly patterns (heatmaps for Hour vs Sales)
-- Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
-- Each visualization MUST:
-  * Use Plotly Express
-  * Have meaningful title starting with "Fig [N]: "
-  * Include axis labels with units
-  * Contain <50 words caption in # comments explaining insight
-  * Use st.plotly_chart() with full width
+Requirements:
+1. Use ONLY these columns: {[c for c in df_cleaned.columns if 'id' not in c.lower()]}
+2. NEVER use these columns: {[c for c in df_cleaned.columns if 'id' in c.lower()]}
+3. Each visualization MUST:
+   - Start with '# Fig [N]: [Meaningful Title]' comment
+   - Use df_cleaned (pre-filtered numeric data)
+   - Include st.plotly_chart(fig, use_container_width=True)
+   - Have proper axis labels with units
+4. Generate 5-7 visualizations of different types
+5. Focus on meaningful business insights from: {analysis_insights}
 
-3. OUTPUT FORMAT:
-- Only Python code within ```python blocks
-- One visualization per code block
-- Include necessary aggregations
-- Example structure:
+Example Code:
 ```python
-# Fig 1: Monthly sales trend
-monthly_sales = df_cleaned.groupby('Month')['Sales'].sum().reset_index()
+# Fig 1: Monthly Sales Trend
+monthly_sales = df_cleaned.groupby('Month', as_index=False)['Sales'].sum()
 fig = px.line(monthly_sales, x='Month', y='Sales', 
-             title='Monthly Sales Trend (USD)')
-fig.update_layout(xaxis_title='Month', yaxis_title='Total Sales')
+             title='Monthly Sales Trend')
+fig.update_layout(xaxis_title='Month', yaxis_title='Total Sales (USD)')
 st.plotly_chart(fig, use_container_width=True)
 ```"""
 
         completion = client.chat.completions.create(
             model="deepseek-r1-distill-llama-70b",
             messages=[{"role": "user", "content": prompt}],
-            temperature=0.3,  # Lower temperature for more focused output
+            temperature=0.3,
             max_tokens=4096
         )
 
@@ -127,28 +117,27 @@ st.plotly_chart(fig, use_container_width=True)
             st.error("No valid code found in response")
             return
 
+        # Create execution context with ACTUAL dataframe
         exec_globals = {
             'pd': pd, 'np': np, 'st': st,
             'px': px, 'go': go, 'ff': ff,
-            'df_cleaned': df_cleaned
+            'df_cleaned': df_cleaned  # Pass cleaned dataframe with this name
         }
 
-        st.subheader("Insightful Data Visualizations")
+        st.subheader("Insightful Visualizations")
         for idx, code in enumerate(code_blocks, 1):
             try:
-                with st.expander(f"Visualization {idx}: Code & Explanation"):
+                with st.expander(f"Visualization {idx}", expanded=True):
                     st.code(code.strip(), language='python')
-                
-                # Execute visualization
-                exec(code.strip(), exec_globals)
-                
+                    # Execute in isolated context
+                    exec(code.strip(), exec_globals)
             except Exception as e:
-                st.error(f"Error in visualization {idx}: {str(e)}")
+                st.error(f"""Error in Visualization {idx}:
+                {str(e)}
+                Code snippet: {code[:200]}...""")
 
     except Exception as e:
         st.error(f"Visualization error: {str(e)}")
-
-data = st.file_uploader("Upload a CSV file", type=["csv"])
 
 if data is not None:
     df = load_data(data)

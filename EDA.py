@@ -88,6 +88,7 @@ def visualize_data_with_groq(client, df):
            - Distribution analysis (histograms)
            - Categorical breakdowns (bar/pie)
            - Hourly patterns (heatmaps)
+        4. Create 8-9 different chart/plots types focusing on these relationships
         
         Example VALID code:
         ```python

@@ -67,13 +67,12 @@ def analyze_data_with_groq(client, df):
         return ""
 
 def visualize_data_with_groq(client, df):
+    # First get analysis insights
+    analysis_insights = analyze_data_with_groq(client, df)
     try:
         df_cleaned = sanitize_dataframe(df)
         if df_cleaned.empty:
             return
-
-        # First get analysis insights
-        analysis_insights = analyze_data_with_groq(client, df)
         
         # Enhanced prompt with explicit variable names
         prompt = f"""Generate Plotly visualizations using THIS EXACT DATAFRAME NAME: df_cleaned

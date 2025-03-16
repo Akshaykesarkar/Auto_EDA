@@ -47,7 +47,7 @@ def analyze_data_with_groq(client, df):
                 "role": "user",
                 "content": f"""Analyze this data summary and provide:
                 1. Key Facts (bullet points of essential metrics)
-                2. Recommendations (actionable insights)
+                2. Recommendations (actionable insights) (example : Promote Bulk Purchases, Increase Marketing Spend,Tax related facts and many other things)
                 3. Conclusion (final observation)
             
                 Summary: {summary}"""

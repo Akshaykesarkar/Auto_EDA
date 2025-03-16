@@ -72,7 +72,6 @@ def visualize_data_with_groq(client, df):
         if df_cleaned.empty:
             return
         
-        
         prompt = f"""Generate Plotly visualization code for this dataset with shape {df_cleaned.shape}.
         Requirements:
         - Use the FULL original dataframe 'df_cleaned'
@@ -80,7 +79,13 @@ def visualize_data_with_groq(client, df):
         - Include 3-4 different chart types
         - Add proper titles and axis labels
         - Use Plotly Express for simplicity
-        - Ensure visualizations use ALL relevant data points"""
+        - Ensure visualizations use ALL relevant data points
+        
+        Columns: {', '.join(df_cleaned.columns)}
+        First 3 rows:
+        {df_cleaned.head(3).to_string()}
+        
+        Return ONLY executable Python code within ```python blocks"""
 
         completion = client.chat.completions.create(
             model="deepseek-r1-distill-llama-70b",

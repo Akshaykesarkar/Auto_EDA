@@ -93,6 +93,12 @@ def visualize_data_with_groq(client, df):
            - Only Python code within ```python blocks
            - One visualization per code block
            - Include necessary aggregations
+        6. Each visualization MUST:
+            * Use Plotly Express
+            * Have meaningful title starting with "Fig [N]: "
+            * Include axis labels with units
+            * Contain <50 words caption in # comments explaining insight
+            * Use st.plotly_chart() with full width
         
         Example VALID code:
         ```python

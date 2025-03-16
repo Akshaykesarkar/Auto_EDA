@@ -71,43 +71,41 @@ def visualize_data_with_groq(client, df):
         df_cleaned = sanitize_dataframe(df)
         if df_cleaned.empty:
             return
-        
-        
-        prompt = f"""Generate meaningful Plotly visualizations for this dataset with shape {df_cleaned.shape}.
-Requirements:
-1. DATA UNDERSTANDING:
-- Columns: {', '.join(df_cleaned.columns)}
-- First 3 rows:
-{df_cleaned.head(3).to_string()}
-
-2. VISUALIZATION REQUIREMENTS:
-- Create 5-7 different chart types focusing on these relationships:
-  * Temporal trends (use line/area charts for Month/Hour columns)
-  * Correlations (scatter plots for Price vs Quantity/Sales)
-  * Distributions (histograms/box plots for Sales/Price)
-  * Categorical breakdowns (bar/pie charts for Product/Category columns)
-  * Hourly patterns (heatmaps and multiple line plots for Hour vs Sales)
-  * Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
-- Each visualization MUST:
-  * Use Plotly Express
-  * Have meaningful title starting with "Fig [N]: "
-  * Include axis labels with units
-  * Contain <50 words caption in # comments explaining insight
-  * Use st.plotly_chart() with full width
-
-3. OUTPUT FORMAT:
-- Only Python code within ```python blocks
-- One visualization per code block
-- Include necessary aggregations
-- Example structure:
-```python
-# Fig 1: Monthly sales trend
-monthly_sales = df_cleaned.groupby('Month')['Sales'].sum().reset_index()
-fig = px.line(monthly_sales, x='Month', y='Sales', 
-             title='Monthly Sales Trend (USD)')
-fig.update_layout(xaxis_title='Month', yaxis_title='Total Sales')
-st.plotly_chart(fig, use_container_width=True)
-```"""
+        prompt = f"""Generate meaningful Plotly visualizations for this dataset with shape {df_cleaned.shape},{df_cleaned.dtype}.
+                Requirements:
+                1. DATA UNDERSTANDING:
+                - Columns: {', '.join(df_cleaned.columns)}
+                - First 3 rows:
+                {df_cleaned.head(3).to_string()}
+                
+                2. VISUALIZATION REQUIREMENTS:
+                - Create 5-7 different chart types focusing on these relationships:
+                  * Temporal trends (use line/area charts for Month/Hour columns)
+                  * Correlations (scatter plots for Price vs Quantity/Sales)
+                  * Distributions (histograms/box plots for Sales/Price)
+                  * Categorical breakdowns (bar/pie charts for Product/Category columns)
+                  * Hourly patterns (heatmaps and multiple line plots for Hour vs Sales)
+                  * Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
+                - Each visualization MUST:
+                  * Use Plotly Express
+                  * Have meaningful title starting with "Fig [N]: "
+                  * Include axis labels with units
+                  * Contain <50 words caption in # comments explaining insight
+                  * Use st.plotly_chart() with full width
+                
+                3. OUTPUT FORMAT:
+                - Only Python code within ```python blocks
+                - One visualization per code block
+                - Include necessary aggregations
+                - Example structure:
+                ```python
+                # Fig 1: Monthly sales trend
+                monthly_sales = df_cleaned.groupby('Month')['Sales'].sum().reset_index()
+                fig = px.line(monthly_sales, x='Month', y='Sales', 
+                             title='Monthly Sales Trend (USD)')
+                fig.update_layout(xaxis_title='Month', yaxis_title='Total Sales')
+                st.plotly_chart(fig, use_container_width=True)
+                ```"""
 
         completion = client.chat.completions.create(
             model="deepseek-r1-distill-llama-70b",

@@ -163,6 +163,52 @@ def visualize_data_with_groq(client, df):
     except Exception as e:
         st.error(f"Visualization error: {str(e)}")
 
+
+def handle_custom_query(client, df_cleaned, query):
+    """Handle custom user queries and generate visualizations"""
+    try:
+        prompt = f"""Generate a visualization and explanation based on this query:
+        Query: {query}
+        
+        Requirements:
+        1. Dataset Columns: {list(df_cleaned.columns)}
+        2. Use ONLY df_cleaned (shape: {df_cleaned.shape})
+        3. Output format:
+           ## Explanation:
+           [Textual explanation of the insight]
+           
+           ## Code:
+           ```python
+           [Plotly visualization code using df_cleaned]
+           ```
+        4. Code must:
+           - Use Plotly Express
+           - Include proper labels/titles
+           - Use st.plotly_chart()
+        """
+
+        completion = client.chat.completions.create(
+            model="qwen-2.5-coder-32b",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.4,
+            max_tokens=131072
+        )
+
+        response = completion.choices[0].message.content
+        
+        # Extract explanation and code
+        explanation = re.search(r'## Explanation:(.*?)(## Code:|\Z)', response, re.DOTALL)
+        code = re.search(r'```python(.*?)```', response, re.DOTALL)
+        
+        return (
+            explanation.group(1).strip() if explanation else "No explanation generated",
+            code.group(1).strip() if code else None
+        )
+
+    except Exception as e:
+        st.error(f"Query processing error: {str(e)}")
+        return None, None
+
 data = st.file_uploader("Upload a CSV file", type=["csv"])
 
 if data is not None:
@@ -183,3 +229,31 @@ if data is not None:
             visualization = visualize_data_with_groq(client, df)
             st.write("Visualization Report:")
             st.write(visualization)
+            st.divider()
+            st.subheader("Custom Data Query")
+            
+            query = st.text_area("Ask a question about your data (e.g., 'Show sales trends by month'):")
+            
+            if st.button("Generate Custom Visualization"):
+                with st.spinner("Processing your query..."):
+                    df_cleaned = sanitize_dataframe(df)
+                    explanation, code = handle_custom_query(client, df_cleaned, query)
+                    
+                    if explanation:
+                        st.subheader("Insight Explanation")
+                        st.write(explanation)
+                    
+                    if code:
+                        st.subheader("Generated Visualization")
+                        try:
+                            exec_globals = {
+                                'pd': pd, 'np': np, 'st': st,
+                                'px': px, 'go': go, 'ff': ff,
+                                'df_cleaned': df_cleaned
+                            }
+                            exec(code, exec_globals)
+                        except Exception as e:
+                            st.error(f"Error executing custom visualization: {str(e)}")
+                            st.code(code, language='python')
+                    else:
+                        st.error("Could not generate visualization for this query")

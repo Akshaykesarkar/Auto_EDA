@@ -151,9 +151,9 @@ def visualize_data_with_groq(client, df):
                 # Execute in controlled environment
                 exec(code.strip(), exec_globals)
                 
-                # Force display if figure wasn't shown
-                if 'fig' in exec_globals:
-                    st.plotly_chart(exec_globals['fig'], use_container_width=True)
+                # # Force display if figure wasn't shown
+                # if 'fig' in exec_globals:
+                #     st.plotly_chart(exec_globals['fig'], use_container_width=True)
 
             except Exception as e:
                 st.error(f"Error in visualization {idx}: {str(e)}")

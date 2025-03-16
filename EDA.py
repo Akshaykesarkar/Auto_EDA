@@ -79,7 +79,6 @@ Requirements:
 - Columns: {', '.join(df_cleaned.columns)}
 - First 3 rows:
 {df_cleaned.head(3).to_string()}
-# - Key analysis insights: analyze_data_with_groq(client, df)
 
 2. VISUALIZATION REQUIREMENTS:
 - Create 5-7 different chart types focusing on these relationships:

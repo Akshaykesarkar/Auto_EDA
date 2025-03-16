@@ -79,7 +79,7 @@ def visualize_data_with_groq(client, df):
                 {df_cleaned.head(3).to_string()}
                 
                 2. VISUALIZATION REQUIREMENTS:
-                - Create 5-7 different chart types focusing on these relationships:
+                - Create 9-11 different chart types focusing on these relationships:
                   * Temporal trends (use line/area charts for Month/Hour columns)
                   * Correlations (scatter plots for Price vs Quantity/Sales)
                   * Distributions (histograms/box plots for Sales/Price)

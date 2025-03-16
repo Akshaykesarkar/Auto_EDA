@@ -86,8 +86,8 @@ Requirements:
   * Correlations (scatter plots for Price vs Quantity/Sales)
   * Distributions (histograms/box plots for Sales/Price)
   * Categorical breakdowns (bar/pie charts for Product/Category columns)
-  * Hourly patterns (heatmaps for Hour vs Sales)
-- Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
+  * Hourly patterns (heatmaps and multiple line plots for Hour vs Sales)
+  * Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
 - Each visualization MUST:
   * Use Plotly Express
   * Have meaningful title starting with "Fig [N]: "

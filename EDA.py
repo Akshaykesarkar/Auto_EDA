@@ -85,7 +85,7 @@ def visualize_data_with_groq(client, df):
            - Boxplots
         3. Required visualizations:
            - Temporal trends (line/area charts)
-           - Correlation analysis (scatter plots)
+           - Correlation analysis (using scatter plots or heatmaps is must)
            - Distribution analysis (histograms)
            - Categorical breakdowns (bar/pie)
            - Hourly patterns (heatmaps)

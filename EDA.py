@@ -78,7 +78,7 @@ def visualize_data_with_groq(client, df):
         
         Requirements:
         1. Use ONLY this data: df_cleaned (shape: {df_cleaned.shape})
-           - Convert category columns into visualization
+           Convert category columns into numerical values and then visualize
         2. Forbidden:
            - Any pd.DataFrame() creations
            - Hardcoded data

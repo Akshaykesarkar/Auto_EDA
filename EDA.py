@@ -68,7 +68,6 @@ def analyze_data_with_groq(client, df):
 
 def visualize_data_with_groq(client, df):
     try:
-        data = df.to_json(orient='records')
         df_cleaned = sanitize_dataframe(df)
         if df_cleaned.empty:
             return
@@ -79,7 +78,7 @@ def visualize_data_with_groq(client, df):
         
         Requirements:
         1. Use ONLY this data: df_cleaned (shape: {df_cleaned.shape})
-           - Convert category columns into visualization using :{data}
+           - Convert category columns into visualization
         2. Forbidden:
            - Any pd.DataFrame() creations
            - Hardcoded data

@@ -100,6 +100,7 @@ def visualize_data_with_groq(client, df):
             * Use Plotly Express
             * Have meaningful title starting with "Fig [N]: "
             * Include axis labels with units
+            * Color using some columns
             * Contain <50 words caption in # comments explaining insight
             * Use st.plotly_chart() with full width
         

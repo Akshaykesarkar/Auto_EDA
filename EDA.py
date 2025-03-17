@@ -91,7 +91,7 @@ def visualize_data_with_groq(client, df):
            - Hourly patterns (heatmaps)
            - Include many other visualization like geographic when longitude and latitude is present (use st.map(map_data))
            - Use Most of the columns
-        4. Create 8 different chart/plots types focusing on these relationships
+        4. Create 12 different chart/plots types focusing on these relationships
         5. OUTPUT FORMAT:
            - Only Python code within ```python blocks
            - One visualization per code block

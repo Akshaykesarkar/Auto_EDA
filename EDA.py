@@ -82,7 +82,7 @@ def visualize_data_with_groq(client, df):
            - Any pd.DataFrame() creations
            - Hardcoded data
            - Example/test data
-           - Boxplots
+           - Box plots
         3. Required visualizations:
            - Temporal trends (line/area charts)
            - Correlation analysis (using scatter plots or heatmaps is must)
@@ -100,7 +100,7 @@ def visualize_data_with_groq(client, df):
             * Use Plotly Express
             * Have meaningful title starting with "Fig [N]: "
             * Include axis labels with units
-            * Represents columns using colors in only scatter plots
+            * Represents columns using colors in ONLY scatter plots
             * Contain <50 words caption in # comments explaining insight
             * Use st.plotly_chart() with full width
         

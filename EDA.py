@@ -45,7 +45,7 @@ def sanitize_dataframe(df):
     categorical_cols = df_cleaned.select_dtypes(include=['object', 'category']).columns
     for col in categorical_cols:
         # Convert to category codes if unique values are reasonable
-        if df_cleaned[col].nunique() <= 50:  # Threshold for categorical encoding
+        if df_cleaned[col].nunique() <= 10:  # Threshold for categorical encoding
             df_cleaned[col] = df_cleaned[col].astype('category').cat.codes
         else:
             # Drop high cardinality categorical columns

@@ -14,6 +14,29 @@ import re
 import plotly.graph_objects as go
 import dash
 
+def initialize_groq_client():
+    try:
+        client = Groq(api_key="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")
+        return client
+    except Exception as e:
+        st.error(f"An error occurred while initializing Groq client: {str(e)}")
+        return None
+    
+def load_data(data):
+    if data.name.endswith('.csv'):
+        df = pd.read_csv(data)
+    return df
+
+def sanitize_dataframe(df):
+    if df is not None:
+        numeric_df = df.select_dtypes(include=[np.number])
+        return numeric_df
+
+def summarize_dataframe(df):
+    if df is not None:
+        summary = df.describe(include='all').to_json(orient='records')
+        return summary
+
 # Function to convert a figure to an image
 def fig_to_image(fig):
     img_bytes = fig.to_image(format="png")

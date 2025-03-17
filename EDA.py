@@ -24,45 +24,9 @@ def load_data(data):
     return df
 
 def sanitize_dataframe(df):
-    if df is None:
-        return pd.DataFrame()  # Return empty dataframe if input is None
-
-    # Create a copy to avoid modifying the original dataframe
-    df_cleaned = df.copy()
-
-    # 1. Handle datetime columns
-    datetime_cols = df_cleaned.select_dtypes(include=['datetime', 'datetimetz']).columns
-    for col in datetime_cols:
-        # Extract useful datetime features
-        df_cleaned[f'{col}_year'] = df_cleaned[col].dt.year
-        df_cleaned[f'{col}_month'] = df_cleaned[col].dt.month
-        df_cleaned[f'{col}_day'] = df_cleaned[col].dt.day
-        df_cleaned[f'{col}_hour'] = df_cleaned[col].dt.hour
-        df_cleaned[f'{col}_minute'] = df_cleaned[col].dt.minute
-        df_cleaned[f'{col}_dayofweek'] = df_cleaned[col].dt.dayofweek
-
-    # 2. Handle categorical columns
-    categorical_cols = df_cleaned.select_dtypes(include=['object', 'category']).columns
-    for col in categorical_cols:
-        # Convert to category codes if unique values are reasonable
-        if df_cleaned[col].nunique() <= 10:  # Threshold for categorical encoding
-            df_cleaned[col] = df_cleaned[col].astype('category').cat.codes
-        else:
-            # Drop high cardinality categorical columns
-            df_cleaned.drop(col, axis=1, inplace=True)
-
-    # 3. Select final columns
-    # Include numeric, datetime features, and encoded categoricals
-    final_cols = df_cleaned.select_dtypes(include=[np.number]).columns
-    df_final = df_cleaned[final_cols]
-
-    # 4. Handle missing values
-    # Fill numeric columns with mean
-    for col in df_final.columns:
-        if df_final[col].isnull().any():
-            df_final[col].fillna(df_final[col].mean(), inplace=True)
-
-    return df_final
+    if df is not None:
+        numeric_df = df.select_dtypes(include=[np.number,'datetime'])
+        return numeric_df
 
 def summarize_dataframe(df):
     if df is not None:

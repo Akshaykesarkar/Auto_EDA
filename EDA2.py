@@ -2,6 +2,17 @@ import base64
 import io
 from PIL import Image
 from fpdf import FPDF
+import numpy as np
+import pandas as pd
+import streamlit as st
+import plotly.express as px
+import plotly.figure_factory as ff
+from groq import Groq
+import re
+# from pandasai import SmartDataframe
+# from pandasai.connectors import PandasConnector
+import plotly.graph_objects as go
+import dash
 
 # Function to convert a figure to an image
 def fig_to_image(fig):

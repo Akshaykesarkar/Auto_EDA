@@ -235,3 +235,53 @@ def visualize_data_with_groq(client, df):
 
     except Exception as e:
         st.error(f"Visualization error: {str(e)}")
+
+
+data = st.file_uploader("Upload a CSV file", type=["csv"])
+
+if data is not None:
+    df = load_data(data)
+
+    if df is not None:
+        st.write("Data Preview:")
+        st.write(df.head())
+
+        client = initialize_groq_client()
+        if client is not None:
+            st.write("Analyzing data with Groq...")
+            analysis = analyze_data_with_groq(client, df)
+            st.write("Analysis Report:")
+            st.write(analysis)
+
+            st.write("Generating Visualization Report...")
+            visualization = visualize_data_with_groq(client, df)
+            st.write("Visualization Report:")
+            st.write(visualization)
+            st.divider()
+            st.subheader("Custom Data Query")
+            
+            query = st.text_area("Ask a question about your data (e.g., 'Show sales trends by month'):")
+            
+            if st.button("Generate Custom Visualization"):
+                with st.spinner("Processing your query..."):
+                    df_cleaned = sanitize_dataframe(df)
+                    explanation, code = handle_custom_query(client, df_cleaned, query)
+                    
+                    if explanation:
+                        st.subheader("Insight Explanation")
+                        st.write(explanation)
+                    
+                    if code:
+                        st.subheader("Generated Visualization")
+                        try:
+                            exec_globals = {
+                                'pd': pd, 'np': np, 'st': st,
+                                'px': px, 'go': go, 'ff': ff,
+                                'df_cleaned': df_cleaned
+                            }
+                            exec(code, exec_globals)
+                        except Exception as e:
+                            st.error(f"Error executing custom visualization: {str(e)}")
+                            st.code(code, language='python')
+                    else:
+                        st.error("Could not generate visualization for this query")

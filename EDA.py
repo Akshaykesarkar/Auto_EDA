@@ -84,6 +84,7 @@ def visualize_data_with_groq(client, df):
            - Hardcoded data
            - Example/test data
            - Box plots
+           - Exclude ID-like columns: {['Unnamed: 0', 'Order ID', 'Pizza ID']}
         3. Required visualizations:
            - Temporal trends (line/area charts)
            - Correlation analysis of Columns (using One scatter plots or heatmap is must)

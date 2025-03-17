@@ -5,6 +5,5 @@ groq
 plotly
 dash
 base64
-io
 PIL
 fpdf

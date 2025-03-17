@@ -25,7 +25,7 @@ def load_data(data):
 
 def sanitize_dataframe(df):
     if df is not None:
-        numeric_df = df.select_dtypes(include=[np.number,'datetime'])
+        numeric_df = df.select_dtypes(include=[np.number])
         return numeric_df
 
 def summarize_dataframe(df):

@@ -10,6 +10,8 @@ import re
 import plotly.graph_objects as go
 import dash
 
+st.title("Automated Exploratory Data Analysis")
+
 def initialize_groq_client():
     try:
         client = Groq(api_key="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")
